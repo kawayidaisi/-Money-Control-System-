@@ -1,0 +1,182 @@
+package 个人财政管理系统;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+
+//主界面
+public class MainFrame extends JFrame implements ActionListener{
+	private JMenuBar mb=new JMenuBar();
+	private JMenu m_system=new JMenu("系统管理");
+	private JMenu m_fm=new JMenu("收支管理");
+	private JMenuItem mI[]={new JMenuItem("密码重置"),new JMenuItem("退出系统")};
+	private JMenuItem m_FMEdit=new JMenuItem("收支编辑");
+	private JLabel l_type,l_fromdate,l_todate,l_bal,l_ps,l_pc;  
+	private JTextField t_fromdate,t_todate; 
+	private JButton b_select;
+	private JComboBox c_type;
+	private JPanel p_condition,p_detail;
+	private String s1[]={"收入","支出","默认"};
+	private double bal1,bal2;	
+	private JTable table;
+	private String username,value;
+	private Object[][] row;
+	public MainFrame(String username){	
+		super(username+",欢迎使用个人理财账本!");
+		this.username=username;
+		Container c=this.getContentPane();
+		c.setLayout(new BorderLayout());
+		c.add(mb,"North");
+		mb.add(m_system);
+		mb.add(m_fm);
+		m_system.add(mI[0]);
+		m_system.add(mI[1]);
+		m_fm.add(m_FMEdit);
+		m_FMEdit.addActionListener(this);
+	        mI[0].addActionListener(this);
+	    mI[1].addActionListener(this);
+	    
+	    l_type=new JLabel("收支类型：");	
+	    c_type=new JComboBox(s1);
+		l_fromdate=new JLabel("起始时间");
+    t_fromdate=new JTextField(8);
+		l_todate=new JLabel("终止时间");
+    t_todate=new JTextField(8);
+		b_select=new JButton("查询");
+		l_ps = new JLabel("注意：时间格式为YYYYMMDD，例如：20150901");
+		p_condition=new JPanel();
+		p_condition.setLayout(new GridLayout(2,1));
+		p_condition.setBorder(BorderFactory.createCompoundBorder(
+	    BorderFactory.createTitledBorder("输入查询条件"), 
+	    BorderFactory.createEmptyBorder(5,5,5,5)));
+			
+		
+	    JPanel p1 = new JPanel();
+	    JPanel p2 = new JPanel();
+
+	    p1.add(l_type);
+	    p1.add(c_type);
+	    p1.add(l_fromdate);
+		p1.add(t_fromdate);
+		p1.add(l_todate);
+		p1.add(t_todate);
+		p1.add(b_select);
+		p2.add(l_ps);
+		
+		
+	    p_condition.add(p1);
+	    p_condition.add(p2);
+    c.add(p_condition,"Center");
+    
+    b_select.addActionListener(this);
+  
+    p_detail=new JPanel();
+    p_detail.setBorder(BorderFactory.createCompoundBorder(
+	    BorderFactory.createTitledBorder("收支明细信息"), 
+	    BorderFactory.createEmptyBorder(5,5,5,5)));
+    l_bal=new JLabel();
+    String[] cloum = {"编号", "日期", "类型","内容","金额",};
+		row = new Object[50][5];
+		table = new JTable(row, cloum){
+			   public boolean isCellEditable(int row, int column){
+			       return false;
+			   }
+			};	
+		JScrollPane scrollpane = new JScrollPane(table);
+		scrollpane.setPreferredSize(new Dimension(530,300));//580 350 530 280
+		scrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollpane.setViewportView(table);
+		p_detail.add(l_bal);
+		p_detail.add(scrollpane);
+		c.add(p_detail,"South");
+		
+		//添加代码
+		
+	    if(bal1<0)
+		    l_bal.setText("个人总收支余额为"+bal1+"元。您已超支，请适度消费！");	
+		else  		
+			l_bal.setText("个人总收支余额为"+bal1+"元。");   				
+    this.setResizable(false);
+		this.setSize(600,580);//600 580
+		Dimension screen = this.getToolkit().getScreenSize();
+	    this.setLocation((screen.width-this.getSize().width)/2,(screen.height-this.getSize().height)/2);
+		this.show();
+	}
+	
+public void actionPerformed(ActionEvent e) {
+	     Object temp=e.getSource();
+	     if(temp==mI[0]){
+	    	new ModifyPwdFrame(username);
+	     }else if(temp==mI[1]){
+	    	 int isCancel = JOptionPane.showConfirmDialog(null, "确定退出","提示", JOptionPane.YES_NO_OPTION);//退出确认
+			 if(isCancel == JOptionPane.YES_OPTION)System.exit(0);
+	     }else if(temp==m_FMEdit){
+	    	new BalEditFrame();
+	     }else if(temp==b_select){   //根据时间及类型联合查询
+	    	value = (String) c_type.getSelectedItem();//取得combBox值
+	    	if(t_fromdate.getText()==null&&t_todate.getText()==null) {
+	    		 JOptionPane.showMessageDialog(null, "没有数据记录");
+	    	}
+	    //	int fromdate=Integer.valueOf(t_fromdate.getText());
+	    //	int todate=Integer.valueOf(t_todate.getText());
+	    	
+	    	
+	     }
+	}
+	
+public boolean research() {
+	int count=0;
+	PreparedStatement ps = null;
+	ResultSet rs = null;
+	boolean result=false;
+	String sql = "select * from pay_gain where kind=?";//调用数据库查询功能
+	Connection con=new MysqlConnection().getConnection();
+	try {
+		ps = con.prepareStatement(sql);
+		ps.setString(1, value);
+		rs = ps.executeQuery();	
+		if (rs.next()) {//循环输出
+			row[count][0]=rs.getInt("id");
+			table.add((Component) row[count][0]);
+			result=true;
+		}
+	}catch (SQLException e) {e.printStackTrace();}
+	 finally {
+		try {
+			 if (rs != null)
+				 rs.close();
+			 if (ps != null)
+				 ps.close();
+			 if (con != null)
+				 con.close();
+		 }  catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	return result;
+}	
+}
+

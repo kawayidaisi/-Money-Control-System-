@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item value="0" key="ant.properties.block.property.sortColumn"/>
+	<item value="0" key="org.eclipse.ant.ui.ant_types_page_context.sortColumn"/>
+	<item value="E:\Java大作业" key="org.eclipse.ant.ui.lastextjar"/>
+	<item value="103" key="org.eclipse.ant.ui.ant_types_page_context.columnWidth3"/>
+	<item value="104" key="org.eclipse.ant.ui.ant_types_page_context.columnWidth2"/>
+	<item value="1024" key="org.eclipse.ant.ui.ant_types_page_context.sortDirection"/>
+	<item value="109" key="org.eclipse.ant.ui.ant_types_page_context.columnWidth1"/>
+	<item value="0" key="org.eclipse.ant.ui.ant_tasks_page_context.sortColumn"/>
+	<item value="1024" key="ant.properties.block.property.sortDirection"/>
+	<item value="104" key="org.eclipse.ant.ui.ant_tasks_page_context.columnWidth1"/>
+	<item value="156" key="org.eclipse.ant.ui.ant_types_page_context.columnWidth0"/>
+	<item value="137" key="ant.properties.block.property.columnWidth2"/>
+	<item value="151" key="org.eclipse.ant.ui.ant_tasks_page_context.columnWidth0"/>
+	<item value="100" key="org.eclipse.ant.ui.ant_tasks_page_context.columnWidth3"/>
+	<item value="138" key="ant.properties.block.property.columnWidth0"/>
+	<item value="100" key="org.eclipse.ant.ui.ant_tasks_page_context.columnWidth2"/>
+	<item value="1024" key="org.eclipse.ant.ui.ant_tasks_page_context.sortDirection"/>
+	<item value="184" key="ant.properties.block.property.columnWidth1"/>
+	<section name="org.eclipse.ant.internal.ui.views.AntView">
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0D;&#x0A;&lt;antView/&gt;" key="memento"/>
+	</section>
+</section>
